@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Zodiac</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --secondary-color: #6c757d;
+      --success-color: #198754;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+      --info-color: #0dcaf0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to right, #f0f2f5, #e2e8f0);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-mode {
+      background: linear-gradient(to right, #1a1a1a, #2d2d2d);
+      color: #f8f9fa;
+    }
+
+    .completed { text-decoration: line-through; background-color: rgba(40, 167, 69, 0.15); }
+    .task-item { transition: all 0.3s ease; cursor: pointer; }
+    .task-item:hover { transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); }
+
+    .section-card {
+      margin-bottom: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: none;
+      background-color: var(--light-color);
+    }
+
+    .dark-mode .section-card {
+      background-color: #333;
+      color: #f8f9fa;
+    }
+
+    .progress-bar { transition: width 0.5s ease-in-out; }
+    .task-priority { border-radius: 50%; width: 15px; height: 15px; display: inline-block; margin-right: 5px; }
+    .high { background-color: var(--danger-color); }
+    .medium { background-color: var(--warning-color); }
+    .low { background-color: var(--success-color); }
+
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .dark-mode .navbar {
+      background-color: #1a1a1a;
+    }
+
+    .pomodoro-timer {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--dark-color);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-mode .pomodoro-timer {
+      color: #f8f9fa;
+    }
+
+    #darkModeToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--dark-color);
+      color: var(--light-color);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .dark-mode #darkModeToggle {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <!-- Dark Mode Toggle -->
+  <button id="darkModeToggle"><i class="fas fa-moon"></i></button>
+
+  <!-- Authentication Section -->
+<div class="container mt-5 animate__animated animate__fadeIn" id="authSection">
+  <div class="card section-card">
+    <div class="card-body">
+      <h2 class="text-center mb-4">Study Suite Pro - Revolutionized</h2>
+      <form id="authForm" novalidate>
+        <div class="row">
+          <!-- Email Input -->
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              <input type="email" class="form-control" id="email" placeholder="Enter your email" required aria-describedby="emailHelp">
+            </div>
+            <div class="invalid-feedback" id="emailFeedback">
+              Please enter a valid email address.
+            </div>
+          </div>
+          
+          <!-- Password Input -->
+          <div class="col-md-6 mb-3">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              <input type="password" class="form-control" id="password" placeholder="Enter your password" required aria-describedby="passwordHelp">
+              <button type="button" class="btn btn-outline-secondary" id="showPassword" onclick="togglePasswordVisibility()">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback" id="passwordFeedback">
+              Please enter your password.
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary mx-2" onclick="handleLogin()">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+          <button type="button" class="btn btn-success mx-2" onclick="handleRegister()">
+            <i class="fas fa-user-plus"></i> Register
+          </button>
+        </div>
+
+        <div class="mt-3 text-center">
+          <a href="#" onclick="resetPassword()" style="text-decoration:none;">Forgot your password?</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle password visibility
+  function togglePasswordVisibility() {
+    const passwordField = document.getElementById('password');
+    const passwordButton = document.getElementById('showPassword');
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      passwordButton.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+      passwordField.type = "password";
+      passwordButton.innerHTML = '<i class="fas fa-eye"></i>';
+    }
+  }
+
+  // Form validation on submit
+  document.getElementById('authForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+
+    let valid = true;
+
+    // Email validation
+    if (!email.validity.valid) {
+      document.getElementById('emailFeedback').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('emailFeedback').style.display = 'none';
+    }
+
+    // Password validation
+    if (password.value.trim() === '') {
+      document.getElementById('passwordFeedback').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('passwordFeedback').style.display = 'none';
+    }
+
+    if (valid) {
+      handleLogin(); // Proceed to login
+    }
+  });
+</script>
+
+ <!-- Main Content -->
+ <div id="mainContent" style="display: none;">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid">
+      <!-- Brand -->
+      <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+        <i class="fas fa-graduation-cap me-2"></i> Study Suite Pro
+      </a>
+
+      <!-- Toggler Button for Mobile -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar Links -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#dashboard" data-target="dashboard"><i class="fas fa-home me-1"></i> Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#pomodoro" data-target="pomodoro"><i class="fas fa-clock me-1"></i> Timer</a></li>
+          <li class="nav-item"><a class="nav-link" href="#notes" data-target="notes"><i class="fas fa-sticky-note me-1"></i> Notes</a></li>
+          <li class="nav-item"><a class="nav-link" href="#planner" data-target="planner"><i class="fas fa-calendar-alt me-1"></i> Planner</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tools" data-target="tools"><i class="fas fa-wrench me-1"></i> Tools</a></li>
+          <!-- Logout Button -->
+          <li class="nav-item">
+            <button class="btn btn-outline-light ms-lg-2 mt-2 mt-lg-0" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Tab -->
+  <div class="container mt-4" id="dashboard" style="display: block;">
+    <div class="row g-4">
+      <!-- Quick Tasks Card -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-primary text-white fw-bold">
+            <i class="fas fa-tasks me-2"></i> Quick Tasks
+          </div>
+          <div class="card-body">
+            <ul class="list-group" id="taskList"></ul>
+            <div class="mt-3 text-center">
+              <a href="#planner" class="btn btn-outline-primary" data-target="planner">
+                <i class="fas fa-calendar-alt me-1"></i> Go to Planner
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timer Section -->
+  <div class="container mt-4" id="pomodoro" style="display: none;">
+    <!-- Pomodoro Timer Content Here -->
+    <h3>Pomodoro Timer</h3>
+    <!-- Your Pomodoro Timer Implementation -->
+  </div>
+
+  <!-- Notes Section -->
+  <div class="container mt-4" id="notes" style="display: none;">
+    <!-- Notes Content Here -->
+    <h3>Your Notes</h3>
+    <!-- Your Notes Implementation -->
+  </div>
+
+  <!-- Planner Section -->
+  <div class="container mt-4" id="planner" style="display: none;">
+    <!-- Planner Content Here -->
+    <h3>Your Planner</h3>
+    <!-- Your Planner Implementation -->
+  </div>
+
+  <!-- Tools Section -->
+  <div class="container mt-4" id="tools" style="display: none;">
+    <!-- Tools Content Here -->
+    <h3>Tools</h3>
+    <!-- Your Tools Implementation -->
+  </div>
+</div>
+
+<!-- JavaScript for functionality -->
+<script>
+  // JavaScript to toggle between sections based on the navbar links
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(event) {
+      // Prevent default behavior of anchor links
+      event.preventDefault();
+
+      // Get the target section id from the data-target attribute
+      const targetSectionId = link.getAttribute('data-target');
+      
+      // Hide all sections
+      const sections = document.querySelectorAll('.container');
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+
+      // Show the clicked section
+      const targetSection = document.getElementById(targetSectionId);
+      if (targetSection) {
+        targetSection.style.display = 'block';
+      }
+
+      // Optionally, add active class to the current link (for visual effect)
+      document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  // Optionally, add a logout function (for demonstration)
+  function logout() {
+    // Add your logout logic here
+    alert('Logged out');
+  }
+</script>
+
+<!-- Bootstrap JS (for toggling navbar on mobile) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Pomodoro Stats Card -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-danger text-white fw-bold">
+          <i class="fas fa-clock me-2"></i> Pomodoro Stats
+        </div>
+        <div class="card-body text-center">
+          <p class="mb-1 text-muted">Completed Sessions:</p>
+          <h4 class="fw-bold text-success" id="completedSessions">0</h4>
+          <div class="mt-3 text-center">
+            <a href="#pomodoro" class="btn btn-outline-danger" data-target="pomodoro">
+              <i class="fas fa-clock me-1"></i> Go to Timer
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Pomodoro Timer Tab -->
+<div class="container mt-4" id="pomodoro" style="display: none;">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-danger text-white fw-bold">
+      <i class="fas fa-clock me-2"></i> Pomodoro Timer
+    </div>
+    <div class="card-body text-center">
+      <!-- Timer Display -->
+      <h1 class="display-4 fw-bold text-danger" id="timer-display">25:00</h1>
+      
+      <!-- Progress Bar -->
+      <div class="progress mb-3" style="height: 10px;">
+        <div id="progress-bar" class="progress-bar bg-success" style="width: 100%;" 
+             role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+      
+      <!-- Control Buttons -->
+      <div class="d-flex justify-content-center">
+        <button class="btn btn-success me-2" onclick="startPauseTimer()" id="startPauseBtn">
+          <i class="fas fa-play"></i> Start
+        </button>
+        <button class="btn btn-warning me-2" onclick="pauseTimer()">
+          <i class="fas fa-pause"></i> Pause
+        </button>
+        <button class="btn btn-danger" onclick="resetTimer()">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </div>
+
+      <!-- Custom Timer Settings -->
+      <div class="mt-3">
+        <label for="workDuration">Work (minutes):</label>
+        <input type="number" id="workDuration" value="25" min="1" max="60" class="form-control d-inline w-auto">
+        
+        <label for="breakDuration" class="ms-2">Break (minutes):</label>
+        <input type="number" id="breakDuration" value="5" min="1" max="20" class="form-control d-inline w-auto">
+        
+        <label for="longBreakDuration" class="ms-2">Long Break:</label>
+        <input type="number" id="longBreakDuration" value="15" min="5" max="60" class="form-control d-inline w-auto">
+
+        <button class="btn btn-secondary ms-2" onclick="setTimerSettings()">
+          <i class="fas fa-cog"></i> Set
+        </button>
+      </div>
+
+      <!-- Session Counter -->
+      <div class="mt-4">
+        <h5 class="text-muted">Completed Sessions: <span class="fw-bold text-primary" id="sessionCount">0</span></h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Timer Script -->
+<script>
+let timer;
+let isRunning = false;
+let totalSeconds = 1500; // Default: 25 minutes
+let breakTime = 300; // Default: 5 minutes
+let longBreakTime = 900; // Default: 15 minutes
+let sessionCount = 0;
+let isBreak = false;
+
+function updateDisplay() {
+  let minutes = Math.floor(totalSeconds / 60);
+  let seconds = totalSeconds % 60;
+  document.getElementById("timer-display").textContent = 
+    `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  
+  let progress = (totalSeconds / (isBreak ? breakTime : 1500)) * 100;
+  document.getElementById("progress-bar").style.width = `${progress}%`;
+}
+
+function startPauseTimer() {
+  if (!isRunning) {
+    timer = setInterval(() => {
+      if (totalSeconds > 0) {
+        totalSeconds--;
+        updateDisplay();
+      } else {
+        clearInterval(timer);
+        isRunning = false;
+        if (!isBreak) {
+          sessionCount++;
+          document.getElementById("sessionCount").textContent = sessionCount;
+          totalSeconds = sessionCount % 4 === 0 ? longBreakTime : breakTime;
+          isBreak = true;
+          alert("Time for a break!");
+        } else {
+          totalSeconds = document.getElementById("workDuration").value * 60;
+          isBreak = false;
+        }
+        startPauseTimer();
+      }
+    }, 1000);
+    document.getElementById("startPauseBtn").innerHTML = '<i class="fas fa-pause"></i> Pause';
+    isRunning = true;
+  } else {
+    clearInterval(timer);
+    document.getElementById("startPauseBtn").innerHTML = '<i class="fas fa-play"></i> Start';
+    isRunning = false;
+  }
+}
+
+function pauseTimer() {
+  clearInterval(timer);
+  isRunning = false;
+  document.getElementById("startPauseBtn").innerHTML = '<i class="fas fa-play"></i> Start';
+}
+
+function resetTimer() {
+  clearInterval(timer);
+  isRunning = false;
+  totalSeconds = document.getElementById("workDuration").value * 60;
+  updateDisplay();
+  document.getElementById("startPauseBtn").innerHTML = '<i class="fas fa-play"></i> Start';
+}
+
+function setTimerSettings() {
+  let workMinutes = parseInt(document.getElementById("workDuration").value);
+  let breakMinutes = parseInt(document.getElementById("breakDuration").value);
+  let longBreakMinutes = parseInt(document.getElementById("longBreakDuration").value);
+
+  if (workMinutes > 0 && breakMinutes > 0 && longBreakMinutes > 0) {
+    totalSeconds = workMinutes * 60;
+    breakTime = breakMinutes * 60;
+    longBreakTime = longBreakMinutes * 60;
+    resetTimer();
+  } else {
+    alert("Please enter valid durations!");
+  }
+}
+
+updateDisplay();
+</script>
+
+    <!-- Notes Tab -->
+<div class="container mt-4" id="notes" style="display: none;">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-info text-white fw-bold">
+      <i class="fas fa-sticky-note me-2"></i> Quick Notes
+    </div>
+    <div class="card-body">
+      <!-- Textarea for Notes -->
+      <textarea class="form-control mb-3" id="noteTextarea" rows="5" placeholder="Write your notes here..."></textarea>
+
+      <!-- Save Button -->
+      <button class="btn btn-primary w-100" onclick="saveNote()">
+        <i class="fas fa-save"></i> Save Note
+      </button>
+
+      <!-- Saved Notes Section -->
+      <div id="savedNotes" class="mt-3">
+        <h5>Saved Notes:</h5>
+        <ul class="list-group" id="noteList"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notes Script -->
+<script>
+  // Function to save notes to localStorage and update the UI
+  function saveNote() {
+    const noteContent = document.getElementById("noteTextarea").value;
+    
+    if (noteContent.trim() === "") {
+      alert("Please write something before saving!");
+      return;
+    }
+
+    let savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
+    savedNotes.push(noteContent);
+
+    // Save to localStorage
+    localStorage.setItem("notes", JSON.stringify(savedNotes));
+
+    // Update UI with the new note
+    displayNotes(savedNotes);
+
+    // Clear the textarea after saving
+    document.getElementById("noteTextarea").value = "";
+
+    // Show success message
+    alert("Note saved successfully!");
+  }
+
+  // Function to display saved notes
+  function displayNotes(notes) {
+    const noteList = document.getElementById("noteList");
+    noteList.innerHTML = ""; // Clear previous notes
+    notes.forEach((note, index) => {
+      const listItem = document.createElement("li");
+      listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+      listItem.innerHTML = `
+        <span class="note-text">${note}</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteNote(${index})">
+          <i class="fas fa-trash-alt"></i> Delete
+        </button>
+      `;
+      noteList.appendChild(listItem);
+    });
+  }
+
+  // Function to delete a note
+  function deleteNote(index) {
+    let savedNotes = JSON.parse(localStorage.getItem("notes"));
+    savedNotes.splice(index, 1); // Remove note by index
+    localStorage.setItem("notes", JSON.stringify(savedNotes)); // Save updated list
+    displayNotes(savedNotes); // Re-render notes
+  }
+
+  // Load and display saved notes on page load
+  window.onload = function() {
+    let savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
+    displayNotes(savedNotes);
+  }
+</script>
+
+
+    <!-- Study Planner Tab -->
+<div class="container mt-4" id="planner" style="display: none;">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-warning text-white fw-bold">
+      <i class="fas fa-calendar-alt me-2"></i> Study Planner
+    </div>
+    <div class="card-body">
+      <!-- Study Session Input Form -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <input type="date" class="form-control" id="sessionDate">
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="sessionSubject" placeholder="Subject">
+        </div>
+        <div class="col-md-2">
+          <input type="number" class="form-control" id="sessionDuration" placeholder="Hours" min="1" step="1">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100" onclick="addStudySession()">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+      </div>
+
+      <!-- Sessions Table -->
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <th>Hours</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Study Planner Script -->
+<script>
+  // Add a new study session to the table and save it in localStorage
+  function addStudySession() {
+    const sessionDate = document.getElementById("sessionDate").value;
+    const sessionSubject = document.getElementById("sessionSubject").value;
+    const sessionDuration = document.getElementById("sessionDuration").value;
+
+    // Validate inputs
+    if (sessionDate === "" || sessionSubject === "" || sessionDuration <= 0) {
+      alert("Please fill in all fields with valid data!");
+      return;
+    }
+
+    const newSession = {
+      date: sessionDate,
+      subject: sessionSubject,
+      duration: sessionDuration,
+    };
+
+    // Retrieve existing sessions from localStorage or create an empty array
+    let studySessions = JSON.parse(localStorage.getItem("studySessions")) || [];
+    studySessions.push(newSession);
+
+    // Save updated sessions back to localStorage
+    localStorage.setItem("studySessions", JSON.stringify(studySessions));
+
+    // Display the updated sessions
+    displayStudySessions(studySessions);
+
+    // Clear the input fields
+    document.getElementById("sessionDate").value = "";
+    document.getElementById("sessionSubject").value = "";
+    document.getElementById("sessionDuration").value = "";
+  }
+
+  // Display all study sessions in the table
+  function displayStudySessions(sessions) {
+    const tableBody = document.getElementById("sessionsTable");
+    tableBody.innerHTML = ""; // Clear the table first
+
+    sessions.forEach((session, index) => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${session.date}</td>
+        <td>${session.subject}</td>
+        <td>${session.duration} hrs</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteStudySession(${index})">
+            <i class="fas fa-trash-alt"></i> Delete
+          </button>
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Delete a study session
+  function deleteStudySession(index) {
+    let studySessions = JSON.parse(localStorage.getItem("studySessions"));
+    studySessions.splice(index, 1); // Remove session at the specified index
+
+    // Save the updated sessions back to localStorage
+    localStorage.setItem("studySessions", JSON.stringify(studySessions));
+
+    // Re-render the table with the updated session list
+    displayStudySessions(studySessions);
+  }
+
+  // Load and display saved study sessions when the page loads
+  window.onload = function() {
+    let studySessions = JSON.parse(localStorage.getItem("studySessions")) || [];
+    displayStudySessions(studySessions);
+  }
+</script>
+
+   <!-- Productivity Tools Tab -->
+<div class="container mt-4" id="tools" style="display: none;">
+  <div class="row g-4">
+    <!-- Word Counter Section -->
+    <div class="col-md-6">
+      <div class="card section-card">
+        <div class="card-header bg-primary text-white"><i class="fas fa-font me-2"></i> Word Counter</div>
+        <div class="card-body">
+          <textarea class="form-control mb-3" id="wordCountTextarea" rows="5" placeholder="Type or paste text here..." oninput="updateWordCount()"></textarea>
+          <p><i class="fas fa-calculator me-1"></i> Word Count: <span id="wordCountResult">0</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Focus Music Section -->
+    <div class="col-md-6">
+      <div class="card section-card">
+        <div class="card-header bg-info text-white"><i class="fas fa-music me-2"></i> Focus Music</div>
+        <div class="card-body">
+          <iframe width="100%" height="150" src="https://www.youtube.com/embed/H1Szzj2cK7Q?controls=0&autoplay=1&loop=1&mute=1"
+            title="Focus Music" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen id="focusMusicPlayer"></iframe>
+          <div class="mt-3 text-center">
+            <button class="btn btn-warning" onclick="toggleMusic()"><i class="fas fa-volume-up"></i> Toggle Sound</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motivational Quote Section -->
+    <div class="col-md-6">
+      <div class="card section-card">
+        <div class="card-header bg-success text-white"><i class="fas fa-quote-left me-2"></i> Motivational Quote</div>
+        <div class="card-body">
+          <blockquote class="blockquote">
+            <p id="quoteText">The only way to do great work is to love what you do.</p>
+            <footer class="blockquote-footer" id="quoteAuthor">Steve Jobs</footer>
+          </blockquote>
+          <button class="btn btn-info" onclick="fetchNewQuote()"><i class="fas fa-sync-alt"></i> New Quote</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Productivity Tools Script -->
+<script>
+  // Word Counter Function
+  function updateWordCount() {
+    const text = document.getElementById("wordCountTextarea").value;
+    const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById("wordCountResult").textContent = wordCount;
+  }
+
+  // Toggle Music Sound (Mute/Unmute)
+  let isMuted = true;
+  function toggleMusic() {
+    const player = document.getElementById("focusMusicPlayer");
+    isMuted = !isMuted;
+    player.contentWindow.postMessage('{"event":"command","func":"mute","args":[' + isMuted + ']}', '*');
+  }
+
+  // Fetch a New Motivational Quote
+  async function fetchNewQuote() {
+    try {
+      const response = await fetch('https://api.quotable.io/random');
+      const data = await response.json();
+      const quoteText = data.content;
+      const quoteAuthor = data.author;
+      document.getElementById("quoteText").textContent = `"${quoteText}"`;
+      document.getElementById("quoteAuthor").textContent = `- ${quoteAuthor}`;
+    } catch (error) {
+      console.error("Error fetching quote: ", error);
+    }
+  }
+</script>
+
+ <!-- Bootstrap Modal for Timer -->
+<div class="modal fade" id="timerModal" tabindex="-1" aria-labelledby="timerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="timerModalLabel"><i class="fas fa-bell"></i> Time's Up!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <i class="fas fa-coffee me-2"></i> Time for a break!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="startBreak()"><i class="fas fa-play"></i> Start Break</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetTimer()"><i class="fas fa-undo"></i> Reset Timer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script for Triggering the Modal and Timer Logic -->
+<script>
+  // Trigger the modal when the timer is up
+  function showTimerModal() {
+    var myModal = new bootstrap.Modal(document.getElementById('timerModal'), {
+      keyboard: false
+    });
+    myModal.show();
+
+    // Play a sound alert when the timer finishes
+    var audio = new Audio('path_to_sound_file.mp3'); // Add path to your sound file
+    audio.play();
+  }
+
+  // Start break functionality
+  function startBreak() {
+    // Implement the logic to start a break (e.g., set a break timer)
+    console.log("Break started!");
+  }
+
+  // Reset Timer functionality
+  function resetTimer() {
+    // Implement reset logic for the Pomodoro timer
+    console.log("Timer reset!");
+  }
+</script>
+
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyA1zh9o2y7kiza91j8A6Ib1FNngRocC-74",
+      authDomain: "studyzodiac.firebaseapp.com",
+      projectId: "studyzodiac",
+      storageBucket: "studyzodiac.firebasestorage.app",
+      messagingSenderId: "823362295915",
+      appId: "1:823362295915:web:8bb90caf4ba9b53062392e",
+      measurementId: "G-4LR13WMSJN"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Dark Mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    function loadDarkMode() {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    }
+
+    document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+    loadDarkMode();
+
+    // Authentication
+    async function handleRegister() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        showMainContent();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        showMainContent();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function resetPassword() {
+      const email = document.getElementById('email').value;
+      if (email) {
+        auth.sendPasswordResetEmail(email)
+          .then(() => alert("Password reset email sent!"))
+          .catch((error) => alert(error.message));
+      } else {
+        alert("Please enter your email to reset the password.");
+      }
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        document.getElementById('mainContent').style.display = 'none';
+        document.getElementById('authSection').style.display = 'block';
+      }).catch((error) => console.error("Logout error:", error));
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) showMainContent();
+      else {
+        document.getElementById('mainContent').style.display = 'none';
+        document.getElementById('authSection').style.display = 'block';
+      }
+    });
+
+    function showMainContent() {
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      loadAllData();
+      fetchNewQuote();
+    }
+// Helper function to get tasks from localStorage
+function getTasks() {
+  try {
+    return JSON.parse(localStorage.getItem('tasks')) || [];
+  } catch (e) {
+    console.error("Error reading tasks from localStorage:", e);
+    return [];
+  }
+}
+
+// Helper function to save tasks to localStorage
+function saveTasks(tasks) {
+  try {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  } catch (e) {
+    console.error("Error saving tasks to localStorage:", e);
+  }
+}
+
+// Add a new task
+function addTask() {
+  const taskText = document.getElementById('taskInput').value.trim();
+  const priority = document.getElementById('taskPriority').value;
+
+  if (!taskText) return; // Skip if task text is empty
+
+  const task = {
+    id: new Date().getTime(),
+    text: taskText,
+    completed: false,
+    priority
+  };
+
+  const tasks = getTasks();
+  tasks.push(task);
+  saveTasks(tasks);
+
+  displayTasks();
+  document.getElementById('taskInput').value = "";
+}
+
+// Delete a task by ID
+function deleteTask(id) {
+  const tasks = getTasks();
+  const updatedTasks = tasks.filter(task => task.id !== id);
+  saveTasks(updatedTasks);
+  displayTasks();
+}
+
+// Toggle task completion status
+function toggleComplete(id) {
+  const tasks = getTasks();
+  const updatedTasks = tasks.map(task => {
+    if (task.id === id) task.completed = !task.completed;
+    return task;
+  });
+  saveTasks(updatedTasks);
+  displayTasks();
+}
+
+// Display all tasks
+function displayTasks() {
+  const taskList = document.getElementById('taskList');
+  taskList.innerHTML = "";
+
+  const tasks = getTasks();
+
+  tasks.forEach(task => {
+    const listItem = document.createElement('li');
+    listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'task-item');
+    if (task.completed) listItem.classList.add('completed');
+
+    listItem.innerHTML = `
+      <span onclick="toggleComplete(${task.id})" aria-label="Mark task as ${task.completed ? 'incomplete' : 'completed'}">${task.text}</span>
+      <div>
+        <span class="task-priority ${task.priority}" aria-label="Task priority: ${task.priority}"></span>
+        <button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})" aria-label="Delete task">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+
+    taskList.appendChild(listItem);
+  });
+}
+
+    // Pomodoro Timer
+let timeLeft, timerInterval;
+let isWork = true, completedSessions = 0;
+let workDuration = 25, breakDuration = 5;
+const timerDisplay = document.getElementById('timer-display');
+const progressBar = document.getElementById('progress-bar');
+const startPauseBtn = document.getElementById('startPauseBtn');
+const completedSessionsDisplay = document.getElementById('completedSessions');
+const timerModal = document.getElementById('timerModal');
+
+function updateTimer() {
+  const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+  const seconds = (timeLeft % 60).toString().padStart(2, '0');
+  timerDisplay.textContent = `${minutes}:${seconds}`;
+  progressBar.style.width = `${(timeLeft / (isWork ? workDuration : breakDuration) / 60) * 100}%`;
+}
+
+function switchMode() {
+  isWork = !isWork;
+  timeLeft = isWork ? workDuration * 60 : breakDuration * 60;
+  updateTimer();
+  clearInterval(timerInterval);
+  timerInterval = null;
+  
+  // Update progress bar color and session count
+  progressBar.classList.toggle('bg-success', isWork);
+  progressBar.classList.toggle('bg-warning', !isWork);
+  
+  if (!isWork) {
+    completedSessions++;
+    completedSessionsDisplay.textContent = completedSessions;
+  }
+
+  // Show modal when the session ends
+  if (!isWork) {
+    new bootstrap.Modal(timerModal).show();
+  }
+}
+
+function startTimer() {
+  if (timerInterval) {
+    // If the timer is already running, pause it
+    clearInterval(timerInterval);
+    timerInterval = null;
+    startPauseBtn.innerHTML = '<i class="fas fa-play"></i> Start';
+  } else {
+    // If the timer is paused, start it
+    startPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+    timerInterval = setInterval(() => {
+      if (timeLeft <= 0) {
+        switchMode();
+      } else {
+        timeLeft--;
+        updateTimer();
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  isWork = true;
+  timeLeft = workDuration * 60;
+  updateTimer();
+  progressBar.style.width = '100%';
+  progressBar.classList.remove('bg-warning');
+  progressBar.classList.add('bg-success');
+  startPauseBtn.innerHTML = '<i class="fas fa-play"></i> Start';
+}
+
+function setTimerSettings() {
+  workDuration = parseInt(document.getElementById('workDuration').value, 10);
+  breakDuration = parseInt(document.getElementById('breakDuration').value, 10);
+  resetTimer();
+}
+
+// Initialize timer on page load
+updateTimer();
+
+  // Helper functions to interact with localStorage
+function getSessions() {
+  try {
+    return JSON.parse(localStorage.getItem('sessions')) || [];
+  } catch (e) {
+    console.error("Error reading sessions from localStorage:", e);
+    return [];
+  }
+}
+
+function saveSessions(sessions) {
+  try {
+    localStorage.setItem('sessions', JSON.stringify(sessions));
+  } catch (e) {
+    console.error("Error saving sessions to localStorage:", e);
+  }
+}
+
+// Add a new study session
+function addStudySession() {
+  const sessionDate = document.getElementById('sessionDate').value;
+  const sessionSubject = document.getElementById('sessionSubject').value;
+  const sessionDuration = document.getElementById('sessionDuration').value;
+
+  if (!sessionDate || !sessionSubject || !sessionDuration) {
+    alert("All fields are required!");
+    return;
+  }
+
+  const sessions = getSessions();
+  const session = { date: sessionDate, subject: sessionSubject, duration: sessionDuration };
+  sessions.push(session);
+  saveSessions(sessions);
+  displaySessions();
+  clearForm();
+}
+
+// Display all sessions in the table
+function displaySessions() {
+  const sessionsTable = document.getElementById('sessionsTable');
+  sessionsTable.innerHTML = ""; // Clear existing table rows
+
+  const sessions = getSessions();
+  sessions.forEach((session, index) => {
+    const row = sessionsTable.insertRow();
+    row.insertCell().textContent = session.date;
+    row.insertCell().textContent = session.subject;
+    row.insertCell().textContent = session.duration;
+    
+    const actionCell = row.insertCell();
+    actionCell.innerHTML = `
+      <button class="btn btn-info btn-sm" onclick="editSession(${index})" aria-label="Edit session">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="deleteSession(${index})" aria-label="Delete session">
+        <i class="fas fa-trash"></i>
+      </button>
+    `;
+  });
+}
+
+// Delete a study session by index
+function deleteSession(index) {
+  const sessions = getSessions();
+  sessions.splice(index, 1); // Remove session at the given index
+  saveSessions(sessions);
+  displaySessions();
+}
+
+// Edit an existing study session
+function editSession(index) {
+  const sessions = getSessions();
+  const session = sessions[index];
+
+  // Populate the form with the session's details
+  document.getElementById('sessionDate').value = session.date;
+  document.getElementById('sessionSubject').value = session.subject;
+  document.getElementById('sessionDuration').value = session.duration;
+
+  // Change the add button to an "update" button
+  const addButton = document.getElementById('addButton');
+  addButton.textContent = "Update Session";
+  addButton.onclick = function () {
+    updateSession(index);
+  };
+}
+
+// Update an existing session
+function updateSession(index) {
+  const sessionDate = document.getElementById('sessionDate').value;
+  const sessionSubject = document.getElementById('sessionSubject').value;
+  const sessionDuration = document.getElementById('sessionDuration').value;
+
+  if (!sessionDate || !sessionSubject || !sessionDuration) {
+    alert("All fields are required!");
+    return;
+  }
+
+  const sessions = getSessions();
+  sessions[index] = { date: sessionDate, subject: sessionSubject, duration: sessionDuration };
+  saveSessions(sessions);
+  displaySessions();
+
+  // Reset the form and button
+  clearForm();
+  document.getElementById('addButton').textContent = "Add Session";
+  document.getElementById('addButton').onclick = addStudySession;
+}
+
+// Clear form after adding or editing a session
+function clearForm() {
+  document.getElementById('sessionDate').value = "";
+  document.getElementById('sessionSubject').value = "";
+  document.getElementById('sessionDuration').value = "";
+}
+
+// Initialize the study planner on page load
+displaySessions();
+
+   // General Helper for Local Storage Operations
+function getLocalStorageData(key, defaultValue = []) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || defaultValue;
+  } catch (e) {
+    console.error(`Error retrieving data for ${key}:`, e);
+    return defaultValue;
+  }
+}
+
+function setLocalStorageData(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) {
+    console.error(`Error saving data for ${key}:`, e);
+  }
+}
+
+// Word Counter
+document.getElementById('wordCountTextarea').addEventListener('input', (e) => {
+  const text = e.target.value.trim();
+  const words = text.match(/\b\w+\b/g) || [];
+  document.getElementById('wordCountResult').textContent = words.length;
+});
+
+// Load All Data
+function loadAllData() {
+  displayTasks();
+  displaySessions();
+  displayNotes(); // Ensure notes are loaded as well
+}
+
+// Fetch New Quote
+function fetchNewQuote() {
+  fetch('https://api.quotable.io/random')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('quoteText').textContent = data.content;
+      document.getElementById('quoteAuthor').textContent = `— ${data.author}`;
+    })
+    .catch(error => console.error('Error fetching quote:', error));
+}
+
+// Save Note
+function saveNote() {
+  const noteText = document.getElementById('noteTextarea').value.trim();
+  if (noteText) {
+    const note = { id: new Date().getTime(), text: noteText };
+    const notes = getLocalStorageData('notes');
+    notes.push(note);
+    setLocalStorageData('notes', notes);
+    displayNotes();
+    document.getElementById('noteTextarea').value = "";
+  }
+}
+
+// Display Notes with Edit and Delete Options
+function displayNotes() {
+  const savedNotes = document.getElementById('savedNotes');
+  savedNotes.innerHTML = "";
+  const notes = getLocalStorageData('notes');
+
+  notes.forEach(note => {
+    const noteDiv = document.createElement('div');
+    noteDiv.classList.add('card', 'mb-3');
+    noteDiv.innerHTML = `
+      <div class="card-body">
+        <p class="card-text" id="note-text-${note.id}">${note.text}</p>
+        <button class="btn btn-info btn-sm" onclick="editNote(${note.id})" aria-label="Edit note"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="deleteNote(${note.id})" aria-label="Delete note"><i class="fas fa-trash"></i></button>
+      </div>
+    `;
+    savedNotes.appendChild(noteDiv);
+  });
+}
+
+// Delete Note
+function deleteNote(id) {
+  const notes = getLocalStorageData('notes');
+  const updatedNotes = notes.filter(note => note.id !== id);
+  setLocalStorageData('notes', updatedNotes);
+  displayNotes();
+}
+
+// Edit Note
+function editNote(id) {
+  const notes = getLocalStorageData('notes');
+  const note = notes.find(n => n.id === id);
+  if (note) {
+    document.getElementById('noteTextarea').value = note.text;
+
+    // Change Save button to update functionality
+    const saveButton = document.getElementById('saveNoteBtn');
+    saveButton.textContent = "Update Note";
+    saveButton.onclick = function () {
+      updateNote(id);
+    };
+  }
+}
+
+// Update Note
+function updateNote(id) {
+  const notes = getLocalStorageData('notes');
+  const updatedText = document.getElementById('noteTextarea').value.trim();
+  if (updatedText) {
+    const updatedNotes = notes.map(note => 
+      note.id === id ? { ...note, text: updatedText } : note
+    );
+    setLocalStorageData('notes', updatedNotes);
+    displayNotes();
+    clearNoteForm();
+  }
+}
+
+// Clear Note Form and Reset Save Button
+function clearNoteForm() {
+  document.getElementById('noteTextarea').value = "";
+  const saveButton = document.getElementById('saveNoteBtn');
+  saveButton.textContent = "Save Note";
+  saveButton.onclick = saveNote;
+}
+
+// Initialize
+displayNotes();
+fetchNewQuote(); // Optional: Fetch a new quote immediately
+  </script>
+</body>
+</html>
